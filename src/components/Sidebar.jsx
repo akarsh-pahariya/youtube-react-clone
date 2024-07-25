@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
+
 const Sidebar = () => {
     return (
-        <div className="text-lg py-2 w-48 text-center shadow-xl">
+        <div className="text-lg py-2 w-48 min-w-48 text-center shadow-xl fixed mt-[75px] bg-white">
             <ul className="font-semibold my-2">
-                <li className="my-1">Home</li>
+                <Link to="/">
+                    <li className="my-1">Home</li>
+                </Link>
                 <li className="my-1">Shorts</li>
                 <li className="my-1">Subscriptions</li>
             </ul>

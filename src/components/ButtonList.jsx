@@ -15,7 +15,7 @@ const ButtonList = () => {
     ];
 
     return (
-        <div>
+        <div className="mx-1">
             {list.map((item) => (
                 <Button key={item} text={item} />
             ))}

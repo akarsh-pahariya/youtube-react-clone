@@ -9,7 +9,7 @@ const Header = () => {
     };
 
     return (
-        <div className="flex justify-between px-5 py-3 items-center shadow-lg">
+        <div className="flex justify-between px-5 py-3 items-center shadow-lg fixed w-screen z-10 bg-white">
             <div className="flex">
                 <img
                     onClick={handleClick}
