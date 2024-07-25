@@ -1,11 +1,33 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleShowSidebar } from "../utils/appSlice";
+import { useEffect, useState } from "react";
+import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import { storeSearchCache } from "../utils/cacheSlice";
 
 const Header = () => {
-    const dsipatch = useDispatch();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const searchCache = useSelector((store) => store.cache.searchCache);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchCache[searchQuery])
+                setSearchResults(searchCache[searchQuery]);
+            else getSearchSuggestions();
+        }, 200);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    const getSearchSuggestions = async () => {
+        const response = await fetch(YOUTUBE_SEARCH_API + searchQuery);
+        const data = await response.json();
+        dispatch(storeSearchCache({ [searchQuery]: data[1] }));
+        setSearchResults(data[1]);
+    };
 
     const handleClick = () => {
-        dsipatch(toggleShowSidebar());
+        dispatch(toggleShowSidebar());
     };
 
     return (
@@ -24,14 +46,30 @@ const Header = () => {
                 />
             </div>
             <div>
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="border-black border-[1px] px-4 py-2 w-96 rounded-l-full"
-                />
-                <button className="border-black border-[1px] px-5 py-2 rounded-r-full bg-gray-200">
-                    🔍
-                </button>
+                <div>
+                    <input
+                        value={searchQuery}
+                        type="text"
+                        placeholder="Search"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="border-black border-[1px] px-4 py-2 w-96 rounded-l-full"
+                    />
+                    <button className="border-black border-[1px] px-5 py-2 rounded-r-full bg-gray-200">
+                        🔍
+                    </button>
+                </div>
+                {searchResults.length !== 0 && (
+                    <div className="fixed bg-white border-black border-[1px] min-w-96 max-w-96 rounded-lg shadow-lg">
+                        {searchResults.map((result) => (
+                            <h1
+                                key={result}
+                                className="py-1 hover:bg-slate-400 mx-3"
+                            >
+                                🔍 {result}
+                            </h1>
+                        ))}
+                    </div>
+                )}
             </div>
             <div>
                 <img
