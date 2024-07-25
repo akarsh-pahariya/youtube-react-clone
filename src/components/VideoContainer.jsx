@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { YOUTUBE_VIDEOS_URL } from "../utils/constants";
-import VideoCard from "./VideoCard";
+import VideoCard, { TagVideoCard } from "./VideoCard";
 import { Link } from "react-router-dom";
 
 const VideoContainer = () => {
@@ -16,13 +16,17 @@ const VideoContainer = () => {
         getVideos();
     }, []);
 
-    if (videos.length === 0) return <div>Loading...</div>;
+    if (!videos) return <div>Loading...</div>;
 
     return (
         <div className="flex flex-wrap">
             {videos.map((video) => (
                 <Link to={"/watch?v=" + video.id} key={video.id}>
-                    <VideoCard info={video} />
+                    {video.snippet.tags ? (
+                        <TagVideoCard info={video} />
+                    ) : (
+                        <VideoCard info={video} />
+                    )}
                 </Link>
             ))}
         </div>
